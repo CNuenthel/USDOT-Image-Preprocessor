@@ -1,14 +1,11 @@
 import cv2
 import pytesseract
-from matplotlib import pyplot as plt
-import numpy as np
-import imutils
-import easyocr
+
 
 # PREPROCESS IMAGE FOR READABILITY
 
 # Load Image
-img = cv2.imread('base_images/truck_image.jpg')
+img = cv2.imread('base_images/truck_image4.jpg')
 
 # Grayscale image
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -17,28 +14,32 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 cv2.imwrite("processed/gray_scale.jpeg", gray)
 
 # Noise reduction
-# bfilter = cv2.bilateralFilter(gray, 10, 10, 10)
+bfilter = cv2.bilateralFilter(gray, 5, 5, 5)
 
-ret, thresh = cv2.threshold(gray, 17, 255, cv2.THRESH_BINARY)
+# ret, thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
 # ______________________________________________________________________________________________________________________
 
 
 # Edge detection
-edged = cv2.Canny(thresh, 30, 200)
+edged = cv2.Canny(bfilter, 30, 200)
 
 # Save edged image with noise reduction
 cv2.imwrite("processed/edged.jpeg", cv2.cvtColor(edged, cv2.COLOR_BGR2RGB))
 
 # Detecting words
 hImg, wImg = gray.shape
+
 boxes = pytesseract.image_to_data(img)
 
 data = boxes.splitlines()
 
+for item in data:
+    print(item)
+
 found_data = [item.split() for item in data[1:] if len(item.split()) == 12]
 
 for idx, data in enumerate(found_data):
-    if data[11] == "USDOT":
+    if data[11].upper() == "DOT" or data[11].upper() == "USDOT" :
         print(f"USDOT Number is: {found_data[idx+1][11]}")
         break
 
