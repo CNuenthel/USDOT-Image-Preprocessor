@@ -5,6 +5,8 @@ import random
 
 # Install Tesseract OCR from here:
 # https://github.com/UB-Mannheim/tesseract/wiki#windows
+# Add Tesseract OCR to path, install pytesseract, and cv2, which is
+# actually opencv-python
 
 # Load the image and preprocess it
 image = cv2.imread('truck_image.jpg')
@@ -18,6 +20,6 @@ thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 usdot_number = pytesseract.image_to_string(Image.open(f"processed/saved_image.jpg"))
 
 print(usdot_number)
-
+print(type(usdot_number))
 
 
